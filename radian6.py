@@ -1,6 +1,6 @@
 import requests, pdb
 from xml.etree import ElementTree
-from .helpers import is_etree_list, etree_to_dict
+from helpers import is_etree_list, etree_to_dict
 
 base_url = 'https://demo-api.radian6.com/socialcloud/v1'
 # base_url = 'https://api.radian6.com/socialcloud/v1'
@@ -11,6 +11,7 @@ topics_params = {
   'basic': 0,
   'includeReactivation': True
 }
+
 
 auth_user = 'mstephen@clixsocial.com'
 auth_pass = '6naGiants!'
