@@ -69,3 +69,23 @@ media_types = [
     'mediaTypeId': '16',
     'mediaTypeName': 'MySpace'}
 ]
+
+report_media_type_names = ['Twitter', 'Facebook', 'MySpace', 'Comments', 'Images', 'Videos', 'Forums', 'Forum Replies']
+report_media_types = list(filter(lambda mt: mt['mediaTypeName'] in report_media_type_names, media_types))
+report_media_type_ids = list(map(lambda mt: mt['mediaTypeId'], report_media_types))
+
+advanced_filter_types = [
+  { 'name': 'Classificiation', 'typeId': '7'},
+  { 'name': 'Topic Profile Sentiment Subjects', 'typeId': '11'},
+  { 'name': 'Engagement Level', 'typeId': '4'},
+  { 'name': 'Widget Keywords', 'typeId': '12'},
+  { 'name': 'Keyword Group', 'typeId': '9'},
+  { 'name': 'Language', 'typeId': '1'},
+  { 'name': 'Media Type', 'typeId': '2'},
+  { 'name': 'Media Type', 'typeId': '23'},
+  { 'name': 'Post Tag', 'typeId': '6'},
+  { 'name': 'Region', 'typeId': '0'},
+  { 'name': 'Sentiment', 'typeId': '3'},
+  { 'name': 'Source Tag', 'typeId': '5'},
+  { 'name': 'User Assignment', 'typeId': '8'}
+]
