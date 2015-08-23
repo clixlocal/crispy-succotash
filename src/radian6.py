@@ -41,6 +41,8 @@ class Client(object):
       'basic': 0,
       'includeReactivation': True
     }
-    return self.get(topics_url, params=topics_params)
+    return self.get(topics_url, params=topics_params)['topicFilters']
 
+  def get_media_types(self):
+    return self.get(base_url + '/lookup/mediaproviders')['MediaTypeList']
 
