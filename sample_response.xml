@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<radian6_RiverOfNews_export>
+    <report_date>2012-07-11 02:24:04 +1200</report_date>
+    <user_name>Brian.Murphy@...</user_name>
+    <RoN_sort_order>publishedDate</RoN_sort_order>
+    <article_count>2</article_count>
+    <total_article_count>101</total_article_count>
+    <article ID="2...9">
+        <description charset="UTF-8">
+            <headline/>
+            <author fbid="-1" externalId="3..2"/>
+            <author_full_name />
+	    <recipient/>
+            <content/>
+            <external_id>22..3</external_id>
+            <parentExternalId>22..2</parentExternalId>
+        </description>
+        <avatar/>
+        <source/>
+        <host>
+            <![CDATA[twitter.com]]>
+        </host>
+        <article_url>
+            <![CDATA[22..3]]>
+        </article_url>
+        <media_provider>TWITTER</media_provider>
+        <media_type_id>8</media_type_id>
+        <language_id>16</language_id>
+        <spam_rating>0</spam_rating>
+        <publish_date epoch="1341901361000">2012-07-10 18:22:41 +1200</publish_date>
+        <harvest_date epoch="1341901379000">2012-07-10 18:22:59 +1200</harvest_date>
+	<PostInsights>
+	    <PostInsight>
+		<Provider>
+		    <![CATA[provider_name]]>
+		</Provider>
+		<Type>
+		    &lt;![CATA[<em>type_name</em>]]&gt;
+		</Type>
+		<Value>
+		    &lt;![CATA[some_<i>value</i>]]&gt;
+		</Value>
+	    </PostInsight>
+	</PostInsights>
+	<SourceInsights>
+	    <SourceInsight>
+		<Provider>
+		    &lt;![CATA[<em>provider_name</em>]]&gt;
+		</Provider>
+		<Type>
+		    &lt;![CATA[<em>type_name</em>]]&gt;
+		</Type>
+		<Value>
+		    &lt;![CATA[some_<em>value</em>]]&gt;
+		</Value>
+	    </SourceInsight>
+	</SourceInsights>
+        <PostDynamicsIteration>
+            <PostDynamicsDefinition>
+                <fieldId>9</fieldId>
+                <label>Following</label>
+                <value/>
+                <sortOrder>1</sortOrder>
+            </PostDynamicsDefinition>
+            <PostDynamicsDefinition>
+                <fieldId>8</fieldId>
+                <label>Followers</label>
+                <value/>
+                <sortOrder>2</sortOrder>
+            </PostDynamicsDefinition>
+            <PostDynamicsDefinition>
+                <fieldId>10</fieldId>
+                <label>Updates</label>
+                <value/>
+                <sortOrder>3</sortOrder>
+            </PostDynamicsDefinition>
+            <PostDynamicsDefinition>
+                <fieldId>21</fieldId>
+                <label>Sentiment</label>
+                <shortLabel>S</shortLabel>
+                <sortOrder>4</sortOrder>
+                <value/>
+                <exceptionValue>2860,false</exceptionValue>
+                <reportValue>Neutral</reportValue>
+                <tooltip/>
+            </PostDynamicsDefinition>
+            <reportFormatedData/>
+        </PostDynamicsIteration>
+    </article>
+    <article ID="2...3">
+        <description charset="UTF-8">
+            <headline>
+                <![CDATA[Post from Facebook user]]>
+            </headline>
+            <author fbid="17..9" externalId="17..9">
+                <![CDATA[Drikus Maree]]>
+            </author>
+            <recipient>
+                <![CDATA[None]]>
+            </recipient>
+            <content>
+                <![CDATA[Facebook post content...]]>
+            </content>
+            <external_id>17...9_22..4</external_id>
+        </description>
+        <source ID="1...2">
+            <![CDATA[Post from Facebook user]]>
+        </source>
+        <host>
+            <![CDATA[www.facebook.com]]>
+        </host>
+        <article_url>
+            <![CDATA[http://www.facebook.com/permalink.php?story_fbid=22...4&id=17...9]]>
+        </article_url>
+        <media_provider>facebook.com Discussions</media_provider>
+        <media_type_id>12</media_type_id>
+        <language_id>1</language_id>
+        <spam_rating>0</spam_rating>
+        <publish_date epoch="1341886037000">2012-07-10 14:07:17 +1200</publish_date>
+        <harvest_date epoch="1341886905000">2012-07-10 14:21:45 +1200</harvest_date>
+        <PostDynamicsIteration>
+            <PostDynamicsDefinition>
+                <fieldId>21</fieldId>
+                <label>Sentiment</label>
+                <shortLabel>S</shortLabel>
+                <sortOrder>1</sortOrder>
+                <value>
+                    <![CDATA[2860,0]]>
+                </value>
+                <exceptionValue>2860,false</exceptionValue>
+                <reportValue>Neutral</reportValue>
+                <tooltip/>
+            </PostDynamicsDefinition>
+            <reportFormatedData>
+                <![CDATA[<span style="font-weight:bold; color: #FF9900; font-size: 11pt"> Sentiment:  </span>Neutral  ]]>
+            </reportFormatedData>
+        </PostDynamicsIteration>
+    </article>
+</radian6_RiverOfNews_export>

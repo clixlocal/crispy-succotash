@@ -26,7 +26,11 @@ def etree_to_dict(t):
         if tag_counts[child.tag] > 1:
           if not sub.get(child.tag):
             sub[child.tag] = []
-          sub[child.tag].append(etree_child(child))
+          sub_data = etree_child(child)[child.tag]
+          if len(child.attrib) > 0:
+            for attr, val in child.attrib.iteritems():
+              sub_data[attr] = val
+          sub[child.tag].append(sub_data)
         else:
           sub[child.tag] = etree_child(child)
   else:

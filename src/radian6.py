@@ -59,6 +59,9 @@ class Client(object):
   def get_regions(self):
     return self.get(base_url + '/lookup/regions')['Regions']
 
+  def get_count_types(self):
+    return self.get(base_url + '/lookup/counttypes')['CountTypeList']
+
   def get_data_by_dates(self, start_date, end_date, topic_profile_id, page_size=10000):
     date_range_start = str(int(unix_time_millis(start_date)))
     date_range_end   = str(int(unix_time_millis(end_date)))
@@ -80,6 +83,7 @@ class Client(object):
     start_url = base_url + data_url.format(**start_params)
     start_response = self.get(start_url, params=params)['radian6_RiverOfNews_export']
     responses.append(start_response)
+    # TODO: Add pagination logic, if start_response['total_article_count'] > page_size
     return responses
 
 class Radian6Data(object):
