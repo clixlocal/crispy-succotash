@@ -9,13 +9,22 @@ def etree_child(child):
   if len(child.getchildren()) > 0:
     return etree_to_dict(child)
   else:
-    return child.text
+    if len(child.attrib) > 0:
+      attribs = child.attrib.copy()
+      attribs['content'] = child.text
+      return attribs
+    else:
+      return child.text
 
 def etree_to_dict(t):
   children = t.getchildren()
   if len(children) > 0:
     if is_etree_list(children):
-      d = {t.tag : map(etree_to_dict, children)}
+      if len(t.attrib) > 0:
+        d = {t.tag: t.attrib.copy()}
+        d[t.tag]['content'] = map(etree_to_dict, children)
+      else:
+        d = {t.tag : map(etree_to_dict, children)}
     else:
       sub = {}
       d = {t.tag: sub}

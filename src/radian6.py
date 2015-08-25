@@ -29,7 +29,7 @@ class Client(object):
     config['auth_token'] = response_body.findall('token')[0].text
     json.dump(config, open(config_path))
 
-  def get(self, url, headers={}, params={}):
+  def get(self, url, headers={}, params={}, xml_to_dict=True):
     req_headers = {
       'auth_appkey': config['auth_appkey'],
       'auth_token':  config['auth_token']
@@ -39,8 +39,11 @@ class Client(object):
     if response.status_code == 401:
       self.authenticate()
       response = requests.get(url, headers=req_headers, params=params)
-    tree = ElementTree.fromstring(response.content)
-    return etree_to_dict(tree)
+    if xml_to_dict:
+      tree = ElementTree.fromstring(response.content)
+      return etree_to_dict(tree)
+    else:
+      return response.content
 
   def get_topics(self):
     topics_params = {
@@ -74,14 +77,14 @@ class Client(object):
     }
     data_url = '/data/topicdata/realtime/{date_range_start}/{date_range_end}/{topics}/{media_types}/{page_index}/{page_size}'
     params = {
-      # 'keywordGroups': '1',
+      'keywordGroups': '1',
       # 'advancedFilters': '' # TODO: figure out how to provide filters for KeywordGroups and Regions
     }
     responses = []
     start_params = format_params.copy()
     start_params.update({'page_index': 1})
     start_url = base_url + data_url.format(**start_params)
-    start_response = self.get(start_url, params=params)['radian6_RiverOfNews_export']
+    start_response = self.get(start_url, params=params)['radian6_RiverOfNews_KeywordGrouped_export']
     responses.append(start_response)
     # TODO: Add pagination logic, if start_response['total_article_count'] > page_size
     return responses
@@ -104,5 +107,5 @@ class Radian6Data(object):
   def filter_groups(self, topic_profile_name='Hospitals'):
     topic_profile = self.topic_profile(topic_profile_name)
     groups = topic_profile['filterGroups']['filterGroups']
-    return {fg['name']: fg['filterGroupId'] for fg in groups}
+    return {fg['filterGroup']['filterGroupId']: fg['filterGroup']['name'] for fg in groups}
 

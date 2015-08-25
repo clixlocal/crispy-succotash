@@ -12,8 +12,13 @@ rd6_data = Radian6Data(client)
 start_date = datetime.datetime.strptime('2015-08-17', '%Y-%m-%d')
 end_date = datetime.datetime.strptime('2015-08-21', '%Y-%m-%d')
 topic_profile_id = rd6_data.topic_profile_id()
-topic_analysis_data = client.get_data_by_dates(start_date, end_date, topic_profile_id)
-article = topic_analysis_data[0]['article'][0]
+topic_analysis_data = client.get_data_by_dates(start_date, end_date, topic_profile_id)[0]
+
+keyword_group_data = {g['KeywordGroupData']['id'][3:]: g['KeywordGroupData']['content'], topic_analysis_data)
+filter_groups = rd6_data.filter_groups()
+pdb.set_trace()
+
+article = topic_analysis_data['article'][0]
 pp.pprint(article)
 
 api_file = open('data/api_file.csv', 'wb')
