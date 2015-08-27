@@ -1,4 +1,5 @@
 import json, requests, pdb
+from requests import Request, Session
 from xml.etree import ElementTree
 from src.helpers import (
   is_etree_list,
@@ -29,13 +30,20 @@ class Client(object):
     config['auth_token'] = response_body.findall('token')[0].text
     json.dump(config, open(config_path))
 
-  def get(self, url, headers={}, params={}, xml_to_dict=True):
+  def get(self, url, headers={}, params={}, xml_to_dict=True, extra_query_params=None):
     req_headers = {
       'auth_appkey': config['auth_appkey'],
       'auth_token':  config['auth_token']
     }
     req_headers.update(headers)
-    response = requests.get(url, headers=req_headers, params=params)
+    req = Request('GET', url, headers=req_headers, params=params)
+    sess = Session()
+    #response = requests.get(url, headers=req_headers, params=params)
+    prepped = req.prepare()
+    if extra_query_params:
+      prepped.url = prepped.url + "&" + extra_query_params
+    response = sess.send(prepped)
+    pdb.set_trace()
     if response.status_code == 401:
       self.authenticate()
       response = requests.get(url, headers=req_headers, params=params)
@@ -65,7 +73,7 @@ class Client(object):
   def get_count_types(self):
     return self.get(base_url + '/lookup/counttypes')['CountTypeList']
 
-  def get_data_by_dates(self, start_date, end_date, topic_profile_id, page_size=10000):
+  def get_data_by_dates(self, start_date, end_date, topic_profile_id, page_size=10000, keyword_group_ids=None):
     date_range_start = str(int(unix_time_millis(start_date)))
     date_range_end   = str(int(unix_time_millis(end_date)))
     format_params = {
@@ -80,6 +88,11 @@ class Client(object):
       'keywordGroups': '1',
       # 'advancedFilters': '' # TODO: figure out how to provide filters for KeywordGroups and Regions
     }
+    advanced_filters = None
+    if keyword_group_ids:
+      #advanced_filters = 'advancedFilters=' + '|'.join(['9:{0}'.format(kg_id) for kg_id in keyword_group_ids])
+      advanced_filters = '|'.join(['9:{0}'.format(kg_id) for kg_id in keyword_group_ids])
+      params['advancedFilters'] = advanced_filters
     responses = []
     start_params = format_params.copy()
     start_params.update({'page_index': 1})

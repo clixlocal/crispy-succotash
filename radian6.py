@@ -12,10 +12,18 @@ rd6_data = Radian6Data(client)
 start_date = datetime.datetime.strptime('2015-08-17', '%Y-%m-%d')
 end_date = datetime.datetime.strptime('2015-08-21', '%Y-%m-%d')
 topic_profile_id = rd6_data.topic_profile_id()
-topic_analysis_data = client.get_data_by_dates(start_date, end_date, topic_profile_id)[0]
-
-keyword_group_data = {g['KeywordGroupData']['id'][3:]: g['KeywordGroupData']['content'], topic_analysis_data)
 filter_groups = rd6_data.filter_groups()
+# ['FG_94261', 'FG_94260', 'FG_94253', 'FG_94254', 'FG_94255', 'FG_94256', 'FG_94257', 'FG_94258', 'FG_94259']
+pdb.set_trace()
+
+topic_analysis_data = client.get_data_by_dates(start_date, end_date, topic_profile_id, keyword_group_ids=['94261'])[0]
+
+# [3:] trims off the leading 'FG_'
+keyword_group_data = {g['KeywordGroupData']['id'][3:]: g['KeywordGroupData']['content'] for g in topic_analysis_data}
+
+total_articles = {kgid: len(kg[0]['radian6_RiverOfNews_export'].get('article')) for (kgid, kg) in keyword_group_data.items() if kg[0]['radian6_RiverOfNews_export'].get('article') }
+pp.pprint(total_articles)
+
 pdb.set_trace()
 
 article = topic_analysis_data['article'][0]
