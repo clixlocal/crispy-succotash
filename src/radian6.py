@@ -41,9 +41,11 @@ class Client(object):
     #response = requests.get(url, headers=req_headers, params=params)
     prepped = req.prepare()
     if extra_query_params:
-      prepped.url = prepped.url + "&" + extra_query_params
+      if "?" in prepped.url:
+        prepped.url = prepped.url + "&" + extra_query_params
+      else:
+        prepped.url = prepped.url + "?" + extra_query_params
     response = sess.send(prepped)
-    pdb.set_trace()
     if response.status_code == 401:
       self.authenticate()
       response = requests.get(url, headers=req_headers, params=params)
@@ -85,19 +87,18 @@ class Client(object):
     }
     data_url = '/data/topicdata/realtime/{date_range_start}/{date_range_end}/{topics}/{media_types}/{page_index}/{page_size}'
     params = {
-      'keywordGroups': '1',
-      # 'advancedFilters': '' # TODO: figure out how to provide filters for KeywordGroups and Regions
+      # 'keywordGroups': '1',
     }
     advanced_filters = None
     if keyword_group_ids:
-      #advanced_filters = 'advancedFilters=' + '|'.join(['9:{0}'.format(kg_id) for kg_id in keyword_group_ids])
-      advanced_filters = '|'.join(['9:{0}'.format(kg_id) for kg_id in keyword_group_ids])
-      params['advancedFilters'] = advanced_filters
+      advanced_filters = 'advancedFilters=' + '|'.join(['9:"{0}"'.format(kg_id) for kg_id in keyword_group_ids])
     responses = []
     start_params = format_params.copy()
     start_params.update({'page_index': 1})
     start_url = base_url + data_url.format(**start_params)
-    start_response = self.get(start_url, params=params)['radian6_RiverOfNews_KeywordGrouped_export']
+    # top_level_element = 'radian6_RiverOfNews_KeywordGrouped_export'
+    top_level_element = 'radian6_RiverOfNews_export'
+    start_response = self.get(start_url, params=params, extra_query_params=advanced_filters)[top_level_element]
     responses.append(start_response)
     # TODO: Add pagination logic, if start_response['total_article_count'] > page_size
     return responses
