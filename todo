@@ -1,5 +1,4 @@
-- parameterize script to take arguments for:
-  - hospital id to pull data for
-  - s3 folder to upload csv file to
+- Change the amount of time being searched on radian6 for topics to be the last 12 hours (or parameterize via script)
+- Get the Radian API enabled for production (so we're not using demo environment)
+- Get mappings for keyword group names to file names that post_processor expects
 - Refactor post prepper script to pull files from s3
-
