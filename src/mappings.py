@@ -19,6 +19,8 @@ hospital_to_id_map = {
   'Robert Wood Johnson Brand': 'a03F000000Jm4t0'
 }
 
+filter_group_names = ['BH 05 KMC', 'BH 06 CMC', 'BH 04 CMMC', 'BH 03 NBI', 'BH 00 Brand', 'BH 00 EC 005845', 'BH 02 MMC', 'BH 01 SBMC', 'BH 08 JCMC']
+
 barnabas_daily_keywords = [
   'BH 08 JCMC',
   'BH 00 EC 005845',

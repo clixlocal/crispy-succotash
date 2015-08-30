@@ -123,5 +123,5 @@ class Radian6Data(object):
   def filter_groups(self, topic_profile_name='Hospitals'):
     topic_profile = self.topic_profile(topic_profile_name)
     groups = topic_profile['filterGroups']['filterGroups']
-    return {fg['filterGroup']['filterGroupId']: fg['filterGroup']['name'] for fg in groups}
+    return {fg['filterGroup']['name']: fg['filterGroup']['filterGroupId'] for fg in groups}
 
