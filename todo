@@ -1,0 +1,5 @@
+- parameterize script to take arguments for:
+  - hospital id to pull data for
+  - s3 folder to upload csv file to
+- Refactor post prepper script to pull files from s3
+

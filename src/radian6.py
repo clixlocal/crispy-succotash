@@ -86,18 +86,20 @@ class Client(object):
       'page_size': page_size
     }
     data_url = '/data/topicdata/realtime/{date_range_start}/{date_range_end}/{topics}/{media_types}/{page_index}/{page_size}'
-    params = {
-      # 'keywordGroups': '1',
-    }
+    params = {}
     advanced_filters = None
     if keyword_group_ids:
       advanced_filters = 'advancedFilters=' + '|'.join(['9:"{0}"'.format(kg_id) for kg_id in keyword_group_ids])
+      top_level_element = 'radian6_RiverOfNews_export'
+    else:
+      # TODO: keywordGroups param must NOT be included for the advancedFilters param to work
+      top_level_element = 'radian6_RiverOfNews_KeywordGrouped_export'
+      params['keywordGroups'] = '1'
+
     responses = []
     start_params = format_params.copy()
     start_params.update({'page_index': 1})
     start_url = base_url + data_url.format(**start_params)
-    # top_level_element = 'radian6_RiverOfNews_KeywordGrouped_export'
-    top_level_element = 'radian6_RiverOfNews_export'
     start_response = self.get(start_url, params=params, extra_query_params=advanced_filters)[top_level_element]
     responses.append(start_response)
     # TODO: Add pagination logic, if start_response['total_article_count'] > page_size
