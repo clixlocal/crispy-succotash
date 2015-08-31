@@ -86,6 +86,19 @@ class Client(object):
       'page_size': page_size
     }
     data_url = '/data/topicdata/realtime/{date_range_start}/{date_range_end}/{topics}/{media_types}/{page_index}/{page_size}'
+    return self._get_data(data_url, format_params, keyword_group_ids)
+
+  def get_data_by_hours(self, hours, topic_profile_id, page_size=10000, keyword_group_ids=None):
+    format_params = {
+      'hours': hours,
+      'topics': topic_profile_id,
+      'media_types': ','.join(report_media_type_ids),
+      'page_size': page_size
+    }
+    data_url = '/data/topicdata/realtime/{hours}/{topics}/{media_types}/{page_index}/{page_size}'
+    return self._get_data(data_url, format_params, keyword_group_ids)
+
+  def _get_data(self, url, format_params, keyword_group_ids):
     params = {}
     advanced_filters = None
     if keyword_group_ids:
@@ -99,7 +112,7 @@ class Client(object):
     responses = []
     start_params = format_params.copy()
     start_params.update({'page_index': 1})
-    start_url = base_url + data_url.format(**start_params)
+    start_url = base_url + url.format(**start_params)
     start_response = self.get(start_url, params=params, extra_query_params=advanced_filters)[top_level_element]
     responses.append(start_response)
     # TODO: Add pagination logic, if start_response['total_article_count'] > page_size

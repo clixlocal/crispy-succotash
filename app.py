@@ -9,4 +9,4 @@ else:
 
 s3_folder = '{0}-{1}-{2}/{3}/'.format(str(date.year), str(date.month), str(date.day), sub_folder)
 
-os.system('python -m scripts.radian6 {0}'.format(s3_folder))
+os.system('python -m scripts.radian6 {0} {1}'.format('12', s3_folder))
