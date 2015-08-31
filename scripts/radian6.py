@@ -12,7 +12,6 @@ parser.add_argument('hours', type=str, help='The s3 folder to place the files in
 parser.add_argument('s3_folder', type=str, help='The s3 folder to place the files in.')
 
 args = parser.parse_args()
-print(args.s3_folder)
 
 aws_config = json.load(open('config/aws.json'))
 boto3.setup_default_session(**aws_config)
