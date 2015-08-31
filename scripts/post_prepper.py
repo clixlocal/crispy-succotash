@@ -25,6 +25,7 @@
 
 import csv
 import time
+import argparse
 from datetime import timedelta
 from datetime import date
 from datetime import tzinfo, timedelta, datetime
@@ -32,7 +33,15 @@ from dateutil import parser
 from prettytable import PrettyTable
 from simple_salesforce import Salesforce
 
+parser = argparse.ArgumentParser(description='Pull down keyword group data from radian6 and upload to s3')
+parser.add_argument('s3_folder', type=str, help='The s3 folder to place the files in.')
 
+args = parser.parse_args()
+
+aws_config = json.load(open('config/aws.json'))
+boto3.setup_default_session(**aws_config)
+s3 = boto3.resource('s3')
+crispy_bucket = s3.Bucket('crispy-succotash')
 
 posts_processed = 0
 headline_table = PrettyTable()
@@ -227,6 +236,7 @@ def main():
     #make sure post import files are in place
     try:
         for h in Hosptial_ids:
+            # TODO: Switch over to pulling files from s3
             posts_file = open(h + '.csv','rU')
     except IOError as e:
         print ('Error: Missing Radian file ' + h + '.csv. Please add file to directory and retry.')

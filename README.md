@@ -34,3 +34,13 @@ also looks like it could be relevant.
 - BH 04 CMMC
 - BH 05 KMC
 - BH 06 CMC
+
+### Heroku deployment:
+
+See full documentation [here](https://devcenter.heroku.com/articles/clock-processes-python).
+Basically:
+
+```
+$ git push heroku master
+$ heroku ps:scale clock=1
+```
