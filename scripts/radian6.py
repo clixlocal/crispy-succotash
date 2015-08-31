@@ -24,8 +24,8 @@ pp = pprint.PrettyPrinter(indent=2)
 client = Client()
 rd6_data = Radian6Data(client)
 
-start_date = datetime.datetime.strptime('2015-08-17', '%Y-%m-%d')
-end_date = datetime.datetime.strptime('2015-08-21', '%Y-%m-%d')
+# start_date = datetime.datetime.strptime('2015-08-17', '%Y-%m-%d')
+# end_date = datetime.datetime.strptime('2015-08-21', '%Y-%m-%d')
 topic_profile_id = rd6_data.topic_profile_id()
 filter_groups = rd6_data.filter_groups()
 # ['FG_94261', 'FG_94260', 'FG_94253', 'FG_94254', 'FG_94255', 'FG_94256', 'FG_94257', 'FG_94258', 'FG_94259']
@@ -41,14 +41,6 @@ for (keyword, filename) in barnabas_daily_keywords.items():
 
   keyword_group_id = 'FG_' + keyword_group_id
 
-  # topic_analysis_data = client.get_data_by_dates(start_date, end_date, topic_profile_id, keyword_group_ids=['FG_94261'])[0]
-  #
-  # # [3:] trims off the leading 'FG_'
-  # keyword_group_data = {g['KeywordGroupData']['id'][3:]: g['KeywordGroupData']['content'] for g in topic_analysis_data}
-  #
-  # total_articles = {kgid: len(kg[0]['radian6_RiverOfNews_export'].get('article')) for (kgid, kg) in keyword_group_data.items() if kg[0]['radian6_RiverOfNews_export'].get('article') }
-  # topic_analysis_data = client.get_data_by_dates(start_date, end_date, topic_profile_id, keyword_group_ids=['FG_94261'])[0]
-  # TODO: Change the period of time to pull for the last... hours
   # topic_analysis_data = client.get_data_by_dates(start_date, end_date, topic_profile_id, keyword_group_ids=[keyword_group_id])[0]
   topic_analysis_data = client.get_data_by_hours(args.hours, topic_profile_id, keyword_group_ids=[keyword_group_id])[0]
 
