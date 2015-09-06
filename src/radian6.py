@@ -13,8 +13,8 @@ from src.mappings import (
 config_path = 'config/radian6.json'
 config = json.load(open(config_path))
 
-base_url = 'https://demo-api.radian6.com/socialcloud/v1'
-# base_url = 'https://api.radian6.com/socialcloud/v1'
+#base_url = 'https://demo-api.radian6.com/socialcloud/v1'
+base_url = 'https://api.radian6.com/socialcloud/v1'
 
 auth_url = base_url + '/auth/authenticate'
 topics_url = base_url + '/topics'
@@ -28,7 +28,8 @@ class Client(object):
     })
     response_body = ElementTree.fromstring(response.content)
     config['auth_token'] = response_body.findall('token')[0].text
-    json.dump(config, open(config_path))
+    with open(config_path, 'w+') as config_file:
+      json.dump(config, config_file, indent=2)
 
   def get(self, url, headers={}, params={}, xml_to_dict=True, extra_query_params=None):
     req_headers = {
@@ -62,6 +63,7 @@ class Client(object):
       'includeReactivation': True
     }
     return self.get(topics_url, params=topics_params)['topicFilters']
+
 
   def get_media_types(self):
     return self.get(base_url + '/lookup/mediaproviders')['MediaTypeList']
