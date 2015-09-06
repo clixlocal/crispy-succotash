@@ -8,7 +8,7 @@ from src.mappings import (
 from cStringIO import StringIO
 
 parser = argparse.ArgumentParser(description='Pull down keyword group data from radian6 and upload to s3')
-parser.add_argument('hours', type=str, help='The s3 folder to place the files in.')
+parser.add_argument('--hours', type=str, help='The number of hours to pull for the last posts.', default='12')
 parser.add_argument('s3_folder', type=str, help='The s3 folder to place the files in.')
 
 args = parser.parse_args()
@@ -45,16 +45,12 @@ for (keyword, filename) in barnabas_daily_keywords.items():
 
   if int(topic_analysis_data['article_count']) == 0:
     print('no articles for ' + keyword)
-    continue
+    total_articles = 0
+  else:
+    total_articles = len(topic_analysis_data['article'])
+    print("total articles for {0}: ".format(keyword) + str(total_articles))
 
-  total_articles = len(topic_analysis_data['article'])
-  print("total articles for {0}: ".format(keyword) + str(total_articles))
 
-
-  # article = topic_analysis_data['article'][0]
-  # pp.pprint(article)
-
-  # api_file = open('data/api_file.csv', 'wb')
   api_file = StringIO()
   fieldnames = ['ARTICLE_ID','HEADLINE','AUTHOR','CONTENT','ARTICLE_URL','MEDIA_PROVIDER','PUBLISH_DATE','VIEW_COUNT','COMMENT_COUNT','UNIQUE_COMMENTERS','ENGAGEMENT','LIKES_AND_VOTES','INBOUND_LINKS','FORUM_THREAD_SIZE','FOLLOWING','FOLLOWERS','UPDATES','BLOG_POST_SENTIMENT','BLOG_POST_ENGAGEMENT','BLOG_POST_CLASSIFICATION','BLOG_POST_ASSIGNMENT','BLOG_POST_PRIORITY','BLOG_POST_COMMENT','BLOG_POST_NOTE','BLOG_POST_TAG','BLOG_SOURCE_TAG','FIRST_ENGAGEMENT_ACTIVITY','LAST_ENGAGEMENT_ACTIVITY']
   api_writer = csv.DictWriter(api_file, fieldnames=fieldnames)
@@ -66,11 +62,12 @@ for (keyword, filename) in barnabas_daily_keywords.items():
     pdd = article['PostDynamicsIteration']['PostDynamicsIteration']['PostDynamicsDefinition']
     pdd = {f['label']: f['value'] for f in pdd}
 
+    content = description['content']['content'] if type(description['content']) == dict else description['content']
     row = {
       'ARTICLE_ID':        article.get('ID'),
       'HEADLINE':          description['headline'],
       'AUTHOR':            description['author']['content'],
-      'CONTENT':           description['content'],
+      'CONTENT':           content,
       'ARTICLE_URL':       article['article_url'],
       'MEDIA_PROVIDER':    article['media_provider'],
       'PUBLISH_DATE':      article['publish_date']['content'],
@@ -102,7 +99,7 @@ for (keyword, filename) in barnabas_daily_keywords.items():
 
   if total_articles > 1:
     [process_article(a) for a in topic_analysis_data['article']]
-  else:
+  elif total_articles == 1:
     process_article(topic_analysis_data['article']['article'])
 
   s3_object_name = args.s3_folder + filename + '.csv'

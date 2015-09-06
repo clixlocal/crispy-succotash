@@ -23,25 +23,25 @@
 
 
 
-import csv
-import time
-import argparse
+import csv, time, argparse, json, boto3, pdb, os, sys
 from datetime import timedelta
 from datetime import date
 from datetime import tzinfo, timedelta, datetime
 from dateutil import parser
 from prettytable import PrettyTable
 from simple_salesforce import Salesforce
+from cStringIO import StringIO
 
-parser = argparse.ArgumentParser(description='Pull down keyword group data from radian6 and upload to s3')
-parser.add_argument('s3_folder', type=str, help='The s3 folder to place the files in.')
+arg_parser = argparse.ArgumentParser(description='Pull down keyword group data from radian6 and upload to s3')
+arg_parser.add_argument('s3_folder', type=str, help='The s3 folder to place the files in.')
 
-args = parser.parse_args()
+args = arg_parser.parse_args()
 
 aws_config = json.load(open('config/aws.json'))
 boto3.setup_default_session(**aws_config)
 s3 = boto3.resource('s3')
 crispy_bucket = s3.Bucket('crispy-succotash')
+s3_folder = args.s3_folder
 
 posts_processed = 0
 headline_table = PrettyTable()
@@ -209,6 +209,9 @@ def create_post_in_salesforce(post, sf):
 
 	return post
 
+def s3_key(hospital_id):
+    return s3_folder + hospital_id + '.csv'
+
 def main():
     global posts_processed
     global headline_table
@@ -225,42 +228,62 @@ def main():
     sf = Salesforce(username='matt@clixlocal.net', password='8@8yd@ddy', security_token='gndMn2mAQA3LGddS3gkaLWe9v')
     print ('Connected to sfdc')
 
+    all_files_in_s3 = {k.key: k for k in crispy_bucket.objects.filter(Prefix=s3_folder)}
 
 
     print('ClixSocial Master File Import Prepper V2 1/3/2015. \n Expects reviewed and tagged R6 csv exports to be in the same directory. \n Collects posts from multiple Radian6 export csv files. \n Builds a single import csv file formatted for Salesforce.com. \n Addresses issue with long post titles creating import errors.  \n Improved user feedback. \n Does not remove spam or auto tag posts. \n \nStarting... \n ')
     time.sleep(1)
 
     #for each hosptial from list of ids open its rdian file using the id as filename
-    Hosptial_ids = ['a03F0000009buV7','a03F0000009Ev1c','a03F0000009Ev1h', 'a03F0000009Ev1N', 'a03F0000009Ev1S','a03F0000009Ev1X', 'a03F0000009EvQQ','a03F0000009FQ7V']
+    Hosptial_ids = [
+      'a03F0000009Ev1N',
+      'a03F0000009Ev1S',
+      'a03F0000009Ev1X',
+      'a03F0000009Ev1c',
+      'a03F0000009Ev1h',
+      'a03F0000009EvQQ',
+      'a03F0000009FQ7V',
+      'a03F0000009buV7',
+    ]
 
     #make sure post import files are in place
     try:
-        for h in Hosptial_ids:
+        for hospital_id in Hosptial_ids:
+            # key = s3_folder + hospital_id + '.csv'
+            key = s3_key(hospital_id)
+            s3_file = all_files_in_s3.get(key)
+            if not s3_file:
+              raise hospital_id + ' does not exist'
             # TODO: Switch over to pulling files from s3
-            posts_file = open(h + '.csv','rU')
-    except IOError as e:
-        print ('Error: Missing Radian file ' + h + '.csv. Please add file to directory and retry.')
-        print ('Directory = ' + os.getcwd())
+            # posts_file = open(h + '.csv','rU')
+    except:
+        print ('Error: Missing Radian file ' + hospital_id + '.csv. Please add file to directory and retry.')
+        print ('Directory = ' + s3_folder)
         sys.exit()
     else:
         #create master import file
-        master_posts_file = open('masterpostsimport.csv', 'wb')
+        # master_posts_file = open('masterpostsimport.csv', 'wb')
+        master_posts_file = StringIO()
         post_writer = csv.writer(master_posts_file, delimiter=',')
         post_writer.writerow(['HOSPITAL__C', 'ARTICLE_ID', 'HEADLINE', 'AUTHOR', 'CONTENT', 'ARTICLE_URL', 'URL', 'MEDIA_PROVIDER', 'PUBLISH_DATE', 'VIEW_COUNT', 'COMMENT_COUNT', 'UNIQUE_COMMENTERS', 'ENGAGEMENT', 'LIKES_AND_VOTES', 'INBOUND_LINKS', 'FORUM_THREAD_SIZE', 'FOLLOWING', 'FOLLOWERS', 'UPDATES', 'BLOG_POST_SENTIMENT', 'BLOG_POST_ENGAGEMENT', 'BLOG_POST_CLASSIFICATION', 'BLOG_POST_ASSIGNMENT', 'BLOG_POST_PRIORITY', 'BLOG_POST_COMMENT', 'BLOG_POST_NOTE', 'BLOG_POST_TAG', 'BLOG_SOURCE_TAG', 'FIRST_ENGAGEMENT_ACTIVITY', 'LAST_ENGAGEMENT_ACTIVITY'])
         output_table.field_names = ['HOSPITAL ID', 'PROCESSED', 'SPAM', 'ADDED TO IMPORT FILE']
 
         for h in Hosptial_ids:
-            posts_file = open(h + '.csv','rU')
+            # posts_file = open(h + '.csv','rU')
+            s3_file = all_files_in_s3[s3_key(h)].get()
+            posts_file = s3_file['Body'].read().split("\r\n")
             hosptial_post_count = sum(1 for row in posts_file) - 1
             hosptial_spam_post_count = 0
             hosptial_processed_post_count = 0
-            posts_file.close()
+            # posts_file.close()
 
-            posts_file = open(h + '.csv','rU')
+            # posts_file = open(h + '.csv','rU')
             posts = csv.reader(posts_file)
 
             #count the number of posts in reader and send that to status
             for post in posts:
+                if len(post) == 0:
+                  continue
                 if not 'ARTICLE_ID' in post:
                     spam_flag = remove_spam(h, post)
                     if spam_flag == 1:
@@ -271,14 +294,17 @@ def main():
                     else:
                         prep_posts_for_import(h, post)
                         post_writer.writerow(post)
-                        create_post_in_salesforce(post, sf)
+                        # TODO: Keep this commented out for the test run
+                        # create_post_in_salesforce(post, sf)
                         posts_processed = posts_processed + 1
                         hosptial_processed_post_count = hosptial_processed_post_count + 1
 
             output_table.add_row([h, hosptial_processed_post_count, hosptial_spam_post_count, hosptial_post_count])
 
         #close files, archive numbers and provide user feedback
-        posts_file.close()
+        # posts_file.close()
+        s3_object_name = s3_folder + 'masterpostsimport.csv'
+        crispy_bucket.put_object(Key=s3_object_name, Body=master_posts_file.getvalue())
         master_posts_file.close()
 
         print ('spam highlights')

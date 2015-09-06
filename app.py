@@ -1,18 +1,15 @@
 from datetime import datetime
-import os
-from apscheduler.schedulers.blocking import BlockingScheduler
+import os, pdb
+# from apscheduler.schedulers.blocking import BlockingScheduler
 
 
 def run_job():
-  date = datetime.utcnow()
-  if date.hour > 12:
-    sub_folder = 'afternoon'
-  else:
-    sub_folder = 'morning'
+  date = datetime.now()
+  sub_folder = str(date.hour)
 
   s3_folder = '{0}-{1}-{2}/{3}/'.format(str(date.year), str(date.month), str(date.day), sub_folder)
 
-  os.system('python -m scripts.radian6 {0} {1}'.format('12', s3_folder))
+  os.system('python -m scripts.radian6 --hours {0} {1}'.format('12', s3_folder))
   # TODO: Add this in whenever post_prepper is reading from s3
   # os.system('python -m scripts.post_prepper {0}'.format(s3_folder))
 

@@ -1,4 +1,9 @@
-- Change the amount of time being searched on radian6 for topics to be the last 12 hours (or parameterize via script)
-- Get the Radian API enabled for production (so we're not using demo environment)
-- Get mappings for keyword group names to file names that post_processor expects
-- Refactor post prepper script to pull files from s3
+### Test runs:
+
+- Pull data from Radian6 using the typical parameters.
+- Confirm that all the csv files produced are also produced by the script.
+- Count the number of records in each of the csv files and make sure it lines
+  up with the number of records pulled by auto process.
+- Count the number of records created in master import files and make sure
+  they line up.
+
