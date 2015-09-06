@@ -77,6 +77,12 @@ class Client(object):
   def get_count_types(self):
     return self.get(base_url + '/lookup/counttypes')['CountTypeList']
 
+  def get_post_details(self, post_url):
+    params = {
+      'url': post_url
+    }
+    return self.get(base_url + '/post', params=params).get('PostDetails')
+
   def get_data_by_dates(self, start_date, end_date, topic_profile_id, page_size=10000, keyword_group_ids=None):
     date_range_start = str(int(unix_time_millis(start_date)))
     date_range_end   = str(int(unix_time_millis(end_date)))

@@ -1,4 +1,4 @@
-import requests, pdb, pprint, datetime, csv, json, boto3, argparse, sys, io
+import requests, pdb, pprint, datetime, csv, json, boto3, argparse, sys, io, twitter, re, time
 sys.path.append('.')
 from src.radian6 import Client, Radian6Data
 from src.mappings import (
@@ -18,13 +18,17 @@ boto3.setup_default_session(**aws_config)
 s3 = boto3.resource('s3')
 crispy_bucket = s3.Bucket('crispy-succotash')
 
+twitter_config = json.load(open('config/twitter.json'))
+twitter_api = twitter.Api(**twitter_config)
+
 pp = pprint.PrettyPrinter(indent=2)
 
 client = Client()
 rd6_data = Radian6Data(client)
 
-# start_date = datetime.datetime.strptime('2015-08-17', '%Y-%m-%d')
-# end_date = datetime.datetime.strptime('2015-08-21', '%Y-%m-%d')
+start_date = datetime.datetime.strptime('2015-09-04', '%Y-%m-%d')
+# end_date = datetime.datetime.strptime('2015-09-06', '%Y-%m-%d')
+end_date = datetime.datetime.now()
 topic_profile_id = rd6_data.topic_profile_id()
 filter_groups = rd6_data.filter_groups()
 # ['FG_94261', 'FG_94260', 'FG_94253', 'FG_94254', 'FG_94255', 'FG_94256', 'FG_94257', 'FG_94258', 'FG_94259']
@@ -40,8 +44,8 @@ for (keyword, filename) in barnabas_daily_keywords.items():
 
   keyword_group_id = 'FG_' + keyword_group_id
 
-  # topic_analysis_data = client.get_data_by_dates(start_date, end_date, topic_profile_id, keyword_group_ids=[keyword_group_id])[0]
-  topic_analysis_data = client.get_data_by_hours(args.hours, topic_profile_id, keyword_group_ids=[keyword_group_id])[0]
+  topic_analysis_data = client.get_data_by_dates(start_date, end_date, topic_profile_id, keyword_group_ids=[keyword_group_id])[0]
+  # topic_analysis_data = client.get_data_by_hours(args.hours, topic_profile_id, keyword_group_ids=[keyword_group_id])[0]
 
   if int(topic_analysis_data['article_count']) == 0:
     print('no articles for ' + keyword)
@@ -60,13 +64,38 @@ for (keyword, filename) in barnabas_daily_keywords.items():
     description = article['description']['description']
 
     pdd = article['PostDynamicsIteration']['PostDynamicsIteration']['PostDynamicsDefinition']
-    pdd = {f['label']: f['value'] for f in pdd}
+    if type(pdd) == list:
+      pdd = {f['label']: f['value'] for f in pdd}
+    elif type(pdd) == dict:
+      pdd = pdd['PostDynamicsDefinition']
+      pdd = {pdd['label']: pdd['value']}
 
     content = description['content']['content'] if type(description['content']) == dict else description['content']
+    if not content and article['article_url'] and article['media_provider'] == 'TWITTER':
+      twitter_url_match = re.search('statuses\/(.+)$', article['article_url'])
+      if twitter_url_match:
+        status_id = twitter_url_match.group(1)
+        print('pulling data for twitter_url: ' + article['article_url'] + ' status_id: ' + status_id)
+        try:
+          tweet_status = twitter_api.GetStatus(status_id)
+          content = tweet_status.text.encode('utf8')
+          author  = tweet_status.user.screen_name.encode('utf8')
+          # Rate Limiting: https://dev.twitter.com/rest/public/rate-limits
+          time.sleep(5) # For rate limiting, 180 requests per 15 min. == 1 request per 5 secs.
+        except twitter.error.TwitterError as e:
+          print(e)
+          time.sleep(5) # For rate limiting, 180 requests per 15 min. == 1 request per 5 secs.
+          return
+      else:
+        raise "twitter status url format change: " + article['article_url']
+    else:
+      author = description['author']['content']
+
+
     row = {
       'ARTICLE_ID':        article.get('ID'),
       'HEADLINE':          description['headline'],
-      'AUTHOR':            description['author']['content'],
+      'AUTHOR':            author,
       'CONTENT':           content,
       'ARTICLE_URL':       article['article_url'],
       'MEDIA_PROVIDER':    article['media_provider'],
