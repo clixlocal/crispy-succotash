@@ -53,6 +53,9 @@ spam_posts_count = 0
 sfcon = 0
 posts_created = 0
 
+spam_posts_file = StringIO()
+spam_posts = csv.writer(spam_posts_file, delimiter=',')
+spam_posts.writerow(['Spam Post Count', 'Hospital Id' , 'Post Id', 'Published Date', 'Spam Rule Category', 'Spam Key', 'Spam Content', 'Url'])
 
 def archive_spam(h, article_id, pub_date, spam_category, spam_key, spam_content, url):
     global spam_run_count
@@ -63,21 +66,14 @@ def archive_spam(h, article_id, pub_date, spam_category, spam_key, spam_content,
 
     if spam_run_count <=  1:
         spam_posts_count = spam_posts_count + 1
-        spam_posts_file = open('spamposts.csv', 'wb')
-        spam_posts = csv.writer(spam_posts_file, delimiter=',')
-        spam_posts.writerow(['Spam Post Count', 'Hospital Id' , 'Post Id', 'Published Date', 'Spam Rule Category', 'Spam Key', 'Spam Content', 'Url'])
         spam_posts.writerow([spam_posts_count, h, article_id, pub_date, spam_category, spam_key, spam_content, url])
     else:
         if not article_id in spam_article_ids:
             spam_article_ids.append(article_id)
             spam_posts_count = spam_posts_count + 1
-            spam_posts_file = open('spamposts.csv', 'a')
-            spam_posts = csv.writer(spam_posts_file, delimiter=',')
             spam_posts.writerow([spam_posts_count, h, article_id, pub_date, spam_category, spam_key, spam_content, url])
         else:
             return spam_posts_count
-
-    spam_posts_file.close()
 
 def remove_spam(h, post):
     #notes:
@@ -306,6 +302,10 @@ def main():
         s3_object_name = s3_folder + 'masterpostsimport.csv'
         crispy_bucket.put_object(Key=s3_object_name, Body=master_posts_file.getvalue())
         master_posts_file.close()
+
+        s3_object_name = s3_folder + 'spamposts.csv'
+        crispy_bucket.put_object(Key=s3_object_name, Body=spam_posts_file.getvalue())
+        spam_posts_file.close()
 
         print ('spam highlights')
 
