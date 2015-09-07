@@ -9,7 +9,7 @@ set :output, {error: "#{log_path}/cron_error_log.log", standard: "#{log_path}/cr
 
 job_type :python_script, "source #{app_path}/VIRTUAL/bin/activate && cd #{app_path} && python app.py"
 
-every "day", at: %w(8:00am 4:00pm) do
+every 1.day, at: %w(8:00am 4:00pm) do
   command "source #{app_path}/VIRTUAL/bin/activate && cd #{app_path} && python app.py"
 end
 
