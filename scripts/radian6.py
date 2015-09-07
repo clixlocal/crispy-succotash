@@ -44,8 +44,8 @@ for (keyword, filename) in barnabas_daily_keywords.items():
 
   keyword_group_id = 'FG_' + keyword_group_id
 
-  topic_analysis_data = client.get_data_by_dates(start_date, end_date, topic_profile_id, keyword_group_ids=[keyword_group_id])[0]
-  # topic_analysis_data = client.get_data_by_hours(args.hours, topic_profile_id, keyword_group_ids=[keyword_group_id])[0]
+  # topic_analysis_data = client.get_data_by_dates(start_date, end_date, topic_profile_id, keyword_group_ids=[keyword_group_id])[0]
+  topic_analysis_data = client.get_data_by_hours(args.hours, topic_profile_id, keyword_group_ids=[keyword_group_id])[0]
 
   if int(topic_analysis_data['article_count']) == 0:
     print('no articles for ' + keyword)

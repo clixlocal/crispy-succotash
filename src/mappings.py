@@ -20,13 +20,13 @@ hospital_to_id_map = {
 }
 
 barnabas_daily_keywords = {
-  # 'BH 08 JCMC': 'a03F0000009buV7',
-  # 'BH 00 Brand': 'a03F0000009FQ7V',
-  # 'BH 01 SBMC': 'a03F0000009Ev1c',
-  # 'BH 02 MMC': 'a03F0000009EvQQ',
-  # 'BH 03 NBI': 'a03F0000009Ev1S',
-  # 'BH 04 CMMC': 'a03F0000009Ev1h',
-  # 'BH 05 KMC': 'a03F0000009Ev1X',
+  'BH 08 JCMC': 'a03F0000009buV7',
+  'BH 00 Brand': 'a03F0000009FQ7V',
+  'BH 01 SBMC': 'a03F0000009Ev1c',
+  'BH 02 MMC': 'a03F0000009EvQQ',
+  'BH 03 NBI': 'a03F0000009Ev1S',
+  'BH 04 CMMC': 'a03F0000009Ev1h',
+  'BH 05 KMC': 'a03F0000009Ev1X',
   'BH 06 CMC': 'a03F0000009Ev1N',
 }
 
