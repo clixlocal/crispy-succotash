@@ -91,7 +91,6 @@ for (keyword, filename) in barnabas_daily_keywords.items():
     else:
       author = description['author']['content']
 
-
     row = {
       'ARTICLE_ID':        article.get('ID'),
       'HEADLINE':          description['headline'],
@@ -122,7 +121,7 @@ for (keyword, filename) in barnabas_daily_keywords.items():
       'FIRST_ENGAGEMENT_ACTIVITY': None,
       'LAST_ENGAGEMENT_ACTIVITY':  None
     }
-    row = {key: str.encode('utf8') if isinstance(val, unicode) else val for key, val in row.items()}
+    row = {key: val.encode('utf8') if isinstance(val, unicode) else val for key, val in row.items()}
     api_writer.writerow(row)
 
 
