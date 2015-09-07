@@ -290,8 +290,7 @@ def main():
                     else:
                         prep_posts_for_import(h, post)
                         post_writer.writerow(post)
-                        # TODO: Keep this commented out for the test run
-                        # create_post_in_salesforce(post, sf)
+                        create_post_in_salesforce(post, sf)
                         posts_processed = posts_processed + 1
                         hosptial_processed_post_count = hosptial_processed_post_count + 1
 
