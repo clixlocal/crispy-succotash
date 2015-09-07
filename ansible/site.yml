@@ -1,0 +1,54 @@
+---
+- hosts: all
+  pre_tasks:
+    - include_vars: vars/main.yml
+      tags: [whenever]
+  roles:
+    - role: ANXS.ntp
+      sudo: yes
+      ntp_timezone: "{{ntp_timezone}}"
+    - role: azavea.ruby
+      sudo: yes
+      ruby_version: '2.2'
+  tasks:
+    - name: Set the timezone
+      file: src=/usr/share/zoneinfo/{{ ntp_timezone }} dest=/etc/localtime state=link force=yes
+      sudo: yes
+
+    - name: Install dependencies
+      apt: pkg={{item}} state=present
+      with_items:
+        - git
+        - python-pip
+      sudo: yes
+
+    - name: Clone repo
+      git: repo={{app_repo_url}} dest={{app_location}} update=yes version=master accept_hostkey=yes
+      tags: [whenever]
+
+    - name: Install virtualenv
+      pip: name=virtualenv
+      sudo: yes
+
+    - name: Install python dependencies
+      pip: virtualenv="{{app_location}}/VIRTUAL" requirements="{{app_location}}/requirements.txt"
+
+    - name: Install bundler
+      command: "gem install bundler --no-ri --no-rdoc"
+      sudo: yes
+
+    - name: Install ruby dependencies
+      shell: bundle install --path vendor/bundle
+      tags: [whenever]
+      args:
+        chdir: "{{app_location}}"
+        executable: /bin/bash
+
+    - name: Startup whenever
+      shell: bundle exec whenever --update-crontab
+      tags: [whenever]
+      args:
+        chdir: "{{app_location}}"
+        executable: /bin/bash
+
+

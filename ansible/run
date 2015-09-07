@@ -1,0 +1,4 @@
+#!/bin/bash
+
+ansible-playbook -i prod site.yml -v --private-key ~/.ssh/adam-clix.pem
+

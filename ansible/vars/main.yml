@@ -1,0 +1,6 @@
+---
+app_name: crispy-succotash
+app_repo_url: git@github.com:clixlocal/crispy-succotash.git
+app_location: /home/ubuntu/crispy-succotash
+ntp_timezone: EST5EDT
+
