@@ -20,6 +20,7 @@
       with_items:
         - git
         - python-pip
+        - python-dev
       sudo: yes
 
     - name: Clone repo

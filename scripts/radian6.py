@@ -80,6 +80,7 @@ for (keyword, filename) in barnabas_daily_keywords.items():
           tweet_status = twitter_api.GetStatus(status_id)
           content = tweet_status.text.encode('utf8')
           author  = tweet_status.user.screen_name.encode('utf8')
+          headline = "TWEET FROM: {0}".format(author)
           # Rate Limiting: https://dev.twitter.com/rest/public/rate-limits
           time.sleep(5) # For rate limiting, 180 requests per 15 min. == 1 request per 5 secs.
         except twitter.error.TwitterError as e:
@@ -90,10 +91,11 @@ for (keyword, filename) in barnabas_daily_keywords.items():
         raise "twitter status url format change: " + article['article_url']
     else:
       author = description['author']['content']
+      headline = description['headline']
 
     row = {
       'ARTICLE_ID':        article.get('ID'),
-      'HEADLINE':          description['headline'],
+      'HEADLINE':          headline,
       'AUTHOR':            author,
       'CONTENT':           content,
       'ARTICLE_URL':       article['article_url'],
