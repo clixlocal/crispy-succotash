@@ -7,8 +7,8 @@ def run_job():
   sub_folder = str(date.hour)
 
   s3_folder = '{0}-{1}-{2}/{3}/'.format(str(date.year), str(date.month), str(date.day), sub_folder)
-  account = gmail.GMail(email_config['sender_email'], email_config['sender_pass'])
   email_config = json.load(open('config/email.json'))
+  account = gmail.GMail(email_config['sender_email'], email_config['sender_pass'])
 
   if date.hour > 12:
     hours_to_pull = '16'
