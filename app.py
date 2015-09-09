@@ -10,8 +10,14 @@ def run_job():
   account = gmail.GMail(email_config['sender_email'], email_config['sender_pass'])
   email_config = json.load(open('config/email.json'))
 
+  if date.hour > 12:
+    hours_to_pull = '16'
+  else:
+    hours_to_pull = '24'
+
+
   try:
-    os.system('python -m scripts.radian6 --hours {0} {1}'.format('24', s3_folder))
+    os.system('python -m scripts.radian6 --hours {0} {1}'.format(hours_to_pull, s3_folder))
     result = subprocess.Popen(['python', '-m', 'scripts.post_prepper', '{0}'.format(s3_folder)], stdout=subprocess.PIPE).stdout.read()
     email_message = ('''
     The Radian6 to Salesforce export/import ran with the following results:
