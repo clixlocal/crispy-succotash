@@ -308,7 +308,7 @@ def main():
 
         print ('spam highlights')
         print ('Operation complete.')
-        print (str(spam_posts_count + post_processed) + ' posts in Radian.')
+        print (str(spam_posts_count + posts_processed) + ' posts in Radian.')
         print (str(spam_posts_count) + ' spam items removed.')
         print (str(posts_processed) + ' posts added to master import file.')
         print ('Remember to review spam posts archive to ensure that no posts were removed in error.')
