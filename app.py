@@ -40,7 +40,7 @@ def run_job():
                         to=', '.join(email_config['recipients']),
                         text=email_message)
     account.send(msg)
-    raise e
+    raise
 
 
 run_job()
