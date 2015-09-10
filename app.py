@@ -10,11 +10,7 @@ def run_job():
   email_config = json.load(open('config/email.json'))
   account = gmail.GMail(email_config['sender_email'], email_config['sender_pass'])
 
-  if date.hour > 12:
-    hours_to_pull = '16'
-  else:
-    hours_to_pull = '24'
-
+  hours_to_pull = '24'
 
   try:
     os.system('python -m scripts.radian6 --hours {0} {1}'.format(hours_to_pull, s3_folder))
