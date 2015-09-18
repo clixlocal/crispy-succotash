@@ -26,9 +26,9 @@ pp = pprint.PrettyPrinter(indent=2)
 client = Client()
 rd6_data = Radian6Data(client)
 
-start_date = datetime.datetime.strptime('2015-09-04', '%Y-%m-%d')
-# end_date = datetime.datetime.strptime('2015-09-06', '%Y-%m-%d')
-end_date = datetime.datetime.now()
+start_date = datetime.datetime.strptime('2015-09-16 16:00:00', '%Y-%m-%d %H:%M:%S')
+end_date = datetime.datetime.strptime('2015-09-17 16:00:00', '%Y-%m-%d %H:%M:%S')
+#end_date = datetime.datetime.now()
 topic_profile_id = rd6_data.topic_profile_id()
 filter_groups = rd6_data.filter_groups()
 # ['FG_94261', 'FG_94260', 'FG_94253', 'FG_94254', 'FG_94255', 'FG_94256', 'FG_94257', 'FG_94258', 'FG_94259']

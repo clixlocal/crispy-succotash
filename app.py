@@ -13,8 +13,8 @@ def run_job():
   hours_to_pull = '24'
 
   try:
-    os.system('python -m scripts.radian6 --hours {0} {1}'.format(hours_to_pull, s3_folder))
-    result = subprocess.Popen(['python', '-m', 'scripts.post_prepper', '{0}'.format(s3_folder)], stdout=subprocess.PIPE).stdout.read()
+    subprocess.check_output(['python', '-m', 'scripts.radian6', '--hours', hours_to_pull, s3_folder])
+    result = subprocess.check_output(['python', '-m', 'scripts.post_prepper', '{0}'.format(s3_folder)], stdout=subprocess.PIPE).stdout.read()
     email_message = ('''
     The Radian6 to Salesforce export/import ran with the following results:
 
@@ -25,13 +25,13 @@ def run_job():
                         text=email_message)
     account.send(msg)
     print(result)
-  except:
-    e = sys.exc_info()[0]
+  except subprocess.CalledProcessError as e:
+    #e = sys.exc_info()[0]
     email_message = ('''
     An error occurred while processing Radian6 to Salesforce export/import:
 
     {0}
-    ''').format(str(e))
+    ''').format(str(e.output))
     msg = gmail.Message('ERROR: Radian6 to Salesforce',
                         to=', '.join(email_config['recipients']),
                         text=email_message)
