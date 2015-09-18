@@ -31,11 +31,14 @@ class Client(object):
     with open(config_path, 'w+') as config_file:
       json.dump(config, config_file, indent=2)
 
-  def get(self, url, headers={}, params={}, xml_to_dict=True, extra_query_params=None):
-    req_headers = {
+  def req_headers(self):
+    return {
       'auth_appkey': config['auth_appkey'],
       'auth_token':  config['auth_token']
     }
+
+  def get(self, url, headers={}, params={}, xml_to_dict=True, extra_query_params=None):
+    req_headers = self.req_headers()
     req_headers.update(headers)
     req = Request('GET', url, headers=req_headers, params=params)
     sess = Session()
@@ -49,6 +52,7 @@ class Client(object):
     response = sess.send(prepped)
     if response.status_code == 401:
       self.authenticate()
+      req_headers.update(self.req_headers())
       response = requests.get(url, headers=req_headers, params=params)
     if xml_to_dict:
       tree = ElementTree.fromstring(response.content)
