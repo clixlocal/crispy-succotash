@@ -31,29 +31,33 @@ class Client(object):
     with open(config_path, 'w+') as config_file:
       json.dump(config, config_file, indent=2)
 
-  def req_headers(self):
+  def _req_headers(self):
     return {
       'auth_appkey': config['auth_appkey'],
       'auth_token':  config['auth_token']
     }
 
-  def get(self, url, headers={}, params={}, xml_to_dict=True, extra_query_params=None):
-    req_headers = self.req_headers()
-    req_headers.update(headers)
+  def _setup_prepped_request(self, url, req_headers, params, extra_query_params):
     req = Request('GET', url, headers=req_headers, params=params)
-    sess = Session()
-    #response = requests.get(url, headers=req_headers, params=params)
     prepped = req.prepare()
     if extra_query_params:
       if "?" in prepped.url:
         prepped.url = prepped.url + "&" + extra_query_params
       else:
         prepped.url = prepped.url + "?" + extra_query_params
+    return prepped
+
+  def get(self, url, headers={}, params={}, xml_to_dict=True, extra_query_params=None):
+    req_headers = self._req_headers()
+    req_headers.update(headers)
+    sess = Session()
+    prepped = self._setup_prepped_request(url, req_headers, params, extra_query_params)
     response = sess.send(prepped)
     if response.status_code == 401:
       self.authenticate()
-      req_headers.update(self.req_headers())
-      response = requests.get(url, headers=req_headers, params=params)
+      req_headers.update(self._req_headers())
+      prepped = self._setup_prepped_request(url, req_headers, params, extra_query_params)
+      response = sess.send(prepped)
     if xml_to_dict:
       tree = ElementTree.fromstring(response.content)
       return etree_to_dict(tree)
