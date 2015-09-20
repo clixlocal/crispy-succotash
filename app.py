@@ -14,7 +14,7 @@ def run_job():
 
   try:
     subprocess.check_output(['python', '-m', 'scripts.radian6', '--hours', hours_to_pull, s3_folder])
-    result = subprocess.check_output(['python', '-m', 'scripts.post_prepper', '{0}'.format(s3_folder)], stdout=subprocess.PIPE).stdout.read()
+    result = subprocess.check_output(['python', '-m', 'scripts.post_prepper', '{0}'.format(s3_folder)])
     email_message = ('''
     The Radian6 to Salesforce export/import ran with the following results:
 
