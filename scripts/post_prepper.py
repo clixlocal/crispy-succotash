@@ -200,7 +200,7 @@ def create_post_in_salesforce(post, sf):
 			else:
 				#add post to error file with message of error unknow and error message str(inst)
 				# consider stopping the import here to prevent hundres of irrelevant posts from getting into the environment
-				print ('unknown error', + post[1])
+				print ('unknown error' + str(post[1]))
 				print str(inst)
 
 	return post
