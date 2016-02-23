@@ -4,7 +4,8 @@ hospital_to_id_map = {
   'mmc': 'a03F0000009EvQQ',
   'CMMC': 'a03F0000009Ev1h',
   'NBI': 'a03F0000009Ev1S',
-  'CMC': 'a03F0000009Ev1N',
+  #'CMC': 'a03F0000009Ev1N',
+  'CMC': 'a03F000000K1sEo',
   #'KMC/Monmouth Medical Center, Southern Campus': 'a03F0000009Ev1X',
   'KMC/Monmouth Medical Center, Southern Campus': 'a03F000000K1s3A',
   'Hospice and Home Car': 'a03F0000009YdRH',
@@ -29,7 +30,8 @@ barnabas_daily_keywords = {
   'BH 04 CMMC': 'a03F0000009Ev1h',
   #'BH 05 KMC': 'a03F0000009Ev1X',
   'BH 05 KMC': 'a03F000000K1s3A',
-  'BH 06 CMC': 'a03F0000009Ev1N',
+  #'BH 06 CMC': 'a03F0000009Ev1N',
+  'BH 06 CMC': 'a03F000000K1sEo',
 }
 
 media_types = [
