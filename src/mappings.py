@@ -18,7 +18,8 @@ hospital_to_id_map = {
   'Chilton Medical Center': 'a03F000000A9jXN',
   'Goryeb Children\'s Hospital': 'a03F000000A9jXS',
   'Atlantic Health Brand': 'a03F000000J29GR',
-  'Robert Wood Johnson Brand': 'a03F000000Jm4t0'
+  'Robert Wood Johnson Brand': 'a03F000000Jm4t0',
+  'Hackensack University Medical Center': 'a03F000000K20tE'
 }
 
 barnabas_daily_keywords = {
@@ -32,6 +33,7 @@ barnabas_daily_keywords = {
   'BH 05 KMC': 'a03F000000K1s3A',
   #'BH 06 CMC': 'a03F0000009Ev1N',
   'BH 06 CMC': 'a03F000000K1sEo',
+  'HUMC': 'a03F000000K20tE'
 }
 
 media_types = [

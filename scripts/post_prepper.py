@@ -32,6 +32,9 @@ from prettytable import PrettyTable
 from simple_salesforce import Salesforce
 from cStringIO import StringIO
 
+sys.path.append('.')
+from src.mappings import barnabas_daily_keywords
+
 arg_parser = argparse.ArgumentParser(description='Pull down keyword group data from radian6 and upload to s3')
 arg_parser.add_argument('s3_folder', type=str, help='The s3 folder to place the files in.')
 
@@ -231,16 +234,20 @@ def main():
     time.sleep(1)
 
     #for each hosptial from list of ids open its rdian file using the id as filename
-    Hosptial_ids = [
-      'a03F0000009Ev1N',
-      'a03F0000009Ev1S',
-      'a03F0000009Ev1X',
-      'a03F0000009Ev1c',
-      'a03F0000009Ev1h',
-      'a03F0000009EvQQ',
-      'a03F0000009FQ7V',
-      'a03F0000009buV7',
-    ]
+    #Hosptial_ids = [
+    #  #'a03F0000009Ev1N',
+    #  'a03F000000K1sEo',
+    #  'a03F0000009Ev1S',
+    #  #'a03F0000009Ev1X',
+    #  'a03F000000K1s3A',
+    #  'a03F0000009Ev1c',
+    #  'a03F0000009Ev1h',
+    #  'a03F0000009EvQQ',
+    #  'a03F0000009FQ7V',
+    #  'a03F0000009buV7',
+    #  'a03F000000K20tE',
+    #]
+    Hosptial_ids = list(barnabas_daily_keywords.values())
 
     #make sure post import files are in place
     try:
