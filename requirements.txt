@@ -2,7 +2,7 @@ APScheduler==3.0.3
 Jinja2==2.8
 MarkupSafe==0.23
 PyYAML==3.11
-ansible==1.9.3
+ansible==2.9.20
 boto3==1.1.2
 botocore==1.1.11
 chatter==0.1.3
